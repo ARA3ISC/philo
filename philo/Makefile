@@ -2,7 +2,7 @@ NAME = philo
 CC = @cc
 RM = rm -f
 CFLAGS = -Werror -Wextra -Wall
-SRC = philo.c
+SRC = philo.c utils.c error.c
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)
