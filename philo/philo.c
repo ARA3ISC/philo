@@ -6,38 +6,66 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 01:38:38 by maneddam          #+#    #+#             */
-/*   Updated: 2023/02/21 03:38:47 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/02/25 23:26:20 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	get_infos(t_args *info, int argc, char *argv[])
+
+
+void	create_philos(t_args *infos)
 {
-	if (argc == 6)
-			info->option_arg = 1;
-	info->philos_num = ft_atoi(argv[1]);
-	info->time_to_die = ft_atoi(argv[2]);
-	info->time_to_eat = ft_atoi(argv[3]);
-	info->time_to_sleep = ft_atoi(argv[4]);
-	if (info->option_arg)
-		info->option_arg = ft_atoi(argv[5]);
+	// int	i;
+	int	num;
+
+
+	num = infos->philos_num;
+
+
+
+	if (!(infos->philo))
+		print_error("Error");
+	infos->init_time = get_current_time();
+
+	initializing_infos(infos);
+	exit(1);
+	// printf("hh\n");
+
+
+
+
 }
 
 int	main(int argc, char *argv[])
 {
-	t_args info;
+	t_args	*infos;
+
 	if (argc == 5 || argc == 6)
 	{
-		get_infos(&info, argc, argv);
-		// numbering_philos();
+		infos = malloc(sizeof(t_args));
+		get_infos(infos, argc, argv);
 
-		printf("number of philo and forks : %d\n", info.philos_num);
-		printf("time to die : %d milliseconds\n", info.time_to_die);
-		printf("time to eat : %d milliseconds\n", info.time_to_eat);
-		printf("time to sleep : %d milliseconds\n", info.time_to_sleep);
-		if (info.option_arg)
-			printf("number of times each philosopher must eat : %d times\n", info.option_arg);
+
+		// printf("%d\n", infos->philos_num);
+		// exit(1);
+
+		infos->forks = malloc(sizeof(pthread_mutex_t) * infos->philos_num);
+		infos->philo = malloc(sizeof(t_philo) * infos->philos_num);
+
+		check_args(argv);
+		initializing_mutexes(infos);
+		create_philos(infos);
+
+
+		// printf("\ncurrent time --> %ld\n\n", get_current_time());
+		// while (get_current_time() - infos.init_time < 200)
+		// 	usleep(100);
+		// printf("\ninit time --> %ld\n", infos.init_time);
+		// printf("\nlferq --> %ld\n\n", get_current_time() - infos.init_time);
+		// exit(0);
+
+		// destroy_mutexes(&infos);
 	}
 	return (0);
 }

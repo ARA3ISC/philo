@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 03:05:04 by maneddam          #+#    #+#             */
-/*   Updated: 2023/02/21 03:33:46 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/02/21 15:44:23 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,15 @@ int	is_digit(char c)
 void	check(const char *str, long int nb, int isneg, int i)
 {
 	if ((nb * 10 + str[i] - 48 < nb) && (isneg == 1))
-		print_error("error");
+		print_error("Out of range");
 	if ((nb * 10 + str[i] - 48 + 1 < nb) && (isneg == -1))
-		print_error("error");
+		print_error("Out of range");
 }
 
 void	check_dupl_signs(const char *str, int i)
 {
-	if (((str[i] == '+' || str[i] == '-') && (str[i + 1] == '+' || str[i + 1] == '-' || str[i + 1] == '\0')))
+	if (((str[i] == '+' || str[i] == '-') && (str[i + 1] == '+' || str[i
+					+ 1] == '-' || str[i + 1] == '\0')))
 		print_error("Error");
 	if (str[i] == '-')
 		print_error("Negative values are not allowed");
@@ -42,6 +43,8 @@ long int	ft_atoi(const char *str)
 	nb = 0;
 	isneg = 1;
 	i = 0;
+	while (str[i] == 32 || str[i] == '\t')
+		i++;
 	check_dupl_signs(str, i);
 	if (str[i] == '+')
 		i++;
@@ -56,7 +59,5 @@ long int	ft_atoi(const char *str)
 		nb = nb * 10 + str[i] - 48;
 		i++;
 	}
-	if (!(str[i] >= '0' && str[i] <= '9') && str[i])
-		print_error("Only digits are allowed");
 	return (nb * isneg);
 }
