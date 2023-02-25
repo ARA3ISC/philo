@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 01:38:38 by maneddam          #+#    #+#             */
-/*   Updated: 2023/02/25 23:26:20 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/02/25 23:33:03 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ void	create_philos(t_args *infos)
 
 	initializing_infos(infos);
 	exit(1);
-	// printf("hh\n");
-
 
 
 
