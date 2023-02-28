@@ -1,36 +1,71 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   compiling.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/02/27 01:21:33 by maneddam          #+#    #+#             */
+/*   Updated: 2023/02/28 18:50:46 by maneddam         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-void progress_bar(int percent, const char* message) {
-    // Clear the screen
-    printf("\033[2J");
-    // Move the cursor to the top-left corner
-    printf("\033[H");
-
-    // Calculate the width of the progress bar
-    int bar_width = 50;
-    int num_bars = (percent * bar_width) / 100;
-
-    // Draw the progress bar
-    printf("[");
-    for (int i = 0; i < num_bars; i++) {
-        printf("\e[1;32m▶️");
-    }
-    for (int i = num_bars; i < bar_width; i++) {
-        printf(" ");
-    }
-    printf("] %d%%\n", percent);
-
-    // Print the message
-    printf("%s\n", message);
+void	show_msg(const char *message, int x)
+{
+	printf("%s", message);
+	if (x % 4 == 0 && x > 0)
+		printf(" \n");
+	if (x % 4 == 1 && x > 0)
+		printf(" .\n");
+	else if (x % 4 == 2 && x > 0)
+		printf(" ..\n");
+	else if (x % 4 == 3 && x > 0)
+		printf(" ...\n");
 }
 
-int main() {
-    for (int i = 0; i <= 100; i++) {
-        progress_bar(i, "Compiling in progress ...\n");
-        usleep(10000);
-    }
+void	progress_bar(int percent, const char *message, int x)
+{
+	int	bar_width;
+	int	num_bars;
+	int	i;
 
-    return 0;
+	i = 0;
+	printf("\033[2J");
+	printf("\033[H");
+	bar_width = 50;
+	num_bars = (percent * bar_width) / 100;
+	while (i++ < num_bars)
+		printf("\e[1;32m▇");
+	i = num_bars;
+	while (i++ < bar_width)
+		printf(" ");
+	printf("  %d%%\n", percent);
+	show_msg(message, x);
+}
+
+int	main(void)
+{
+	int			i;
+	static int	x;
+
+	i = 0;
+	while (i <= 100)
+	{
+		if (i == 100)
+		{
+			progress_bar(i, "\nDone !\n\n", -1);
+			usleep(20000);
+		}
+		else
+		{
+			progress_bar(i, "\nCompiling in progress", i);
+			usleep(20000);
+		}
+		i++;
+	}
+	return (0);
 }

@@ -6,11 +6,20 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 03:09:03 by maneddam          #+#    #+#             */
-/*   Updated: 2023/02/24 19:21:41 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/02/28 19:07:51 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	print_message(t_philo *philo, char *str, int i)
+{
+	pthread_mutex_lock(&philo->infos->print_mutex);
+	printf("%ld %d %s\n", get_current_time() - philo->infos->init_time,
+		philo->id + 1, str);
+	if (i)
+		pthread_mutex_unlock(&philo->infos->print_mutex);
+}
 
 void	print_error(char *msg)
 {

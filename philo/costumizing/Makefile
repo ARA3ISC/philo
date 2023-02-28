@@ -7,11 +7,7 @@ compiling: compiling.c
 	@./compiling
 	@rm -f compiling
 
-.PHONY: clean
-clean: deleting.c
-	@rm -f compiling
-
-.PHONY: run
-run: compiling
-	./compiling
-
+mse7: deleting.c
+	@$(CC) $(CFLAGS) $< -o $@
+	@./mse7
+	@rm -f mse7
