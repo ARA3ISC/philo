@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/28 16:10:34 by maneddam          #+#    #+#             */
-/*   Updated: 2023/02/28 18:49:03 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/01 10:05:12 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int	main(int argc, char *argv[])
 			print_error("Error");
 		initializing_mutexes(&infos);
 		create_philos(&infos);
+
 		destroy_mutexes(&infos);
 	}
 	return (0);

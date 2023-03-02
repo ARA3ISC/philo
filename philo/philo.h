@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 01:34:24 by maneddam          #+#    #+#             */
-/*   Updated: 2023/02/28 19:08:03 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/01 10:03:11 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,10 @@ typedef struct s_args
 	int					time_to_sleep;
 	int					max_eaten;
 	int					max;
+	int					is_max_specified;
 	long				init_time;
 	pthread_mutex_t		print_mutex;
+	pthread_mutex_t		read_mutex[2];
 	pthread_mutex_t		time_mutex;
 	pthread_mutex_t		*forks;
 	struct philosophers	*philo;

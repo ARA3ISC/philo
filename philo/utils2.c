@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/28 18:53:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/02/28 19:06:36 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/01 10:04:20 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ void	ft_sleep(int time_to_eat)
 
 void	get_infos(t_args *info, int argc, char *argv[])
 {
-	if (argc == 6)
-		info->max_eaten = 1;
+	// if (argc == 6)
+	// 	info->max_eaten = 1;
 	if (ft_atoi(argv[1]) > INT_MAX || ft_atoi(argv[2]) > INT_MAX
 		|| ft_atoi(argv[3]) > INT_MAX || ft_atoi(argv[4]) > INT_MAX)
 		print_error("Out of range");
@@ -34,6 +34,7 @@ void	get_infos(t_args *info, int argc, char *argv[])
 	info->time_to_sleep = ft_atoi(argv[4]);
 	if (argc == 6)
 	{
+		info->is_max_specified = 1;
 		info->max_eaten = ft_atoi(argv[5]);
 		if (ft_atoi(argv[5]) > INT_MAX)
 			print_error("Out of range");
@@ -56,6 +57,8 @@ void	initializing_mutexes(t_args *infos)
 	i = 0;
 	pthread_mutex_init(&infos->time_mutex, NULL);
 	pthread_mutex_init(&infos->print_mutex, NULL);
+	pthread_mutex_init(&infos->read_mutex[0], NULL);
+	pthread_mutex_init(&infos->read_mutex[1], NULL);
 	while (i < infos->philos_num)
 	{
 		if (pthread_mutex_init(&infos->forks[i], NULL) != 0)
@@ -72,6 +75,10 @@ void	destroy_mutexes(t_args *infos)
 	if (pthread_mutex_destroy(&infos->print_mutex) != 0)
 		return ;
 	if (pthread_mutex_destroy(&infos->time_mutex) != 0)
+		return ;
+	if (pthread_mutex_destroy(&infos->read_mutex[0]) != 0)
+		return ;
+	if (pthread_mutex_destroy(&infos->read_mutex[1]) != 0)
 		return ;
 	while (i < infos->philos_num)
 	{

@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 00:00:37 by maneddam          #+#    #+#             */
-/*   Updated: 2023/02/28 19:07:29 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/01 10:12:58 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,12 @@ void	eating(t_philo *philo)
 	pthread_mutex_lock(&philo->infos->forks[philo->left_fork]);
 	print_message(philo, "has taken a fork", 1);
 	print_message(philo, "is eating", 1);
+	pthread_mutex_lock(&philo->infos->read_mutex[0]);
 	philo->eaten_meals++;
+	pthread_mutex_unlock(&philo->infos->read_mutex[0]);
+	pthread_mutex_lock(&philo->infos->read_mutex[1]);
 	philo->infos->max++;
+	pthread_mutex_unlock(&philo->infos->read_mutex[1]);
 	pthread_mutex_lock(&philo->infos->time_mutex);
 	philo->last_eat_time = get_current_time();
 	pthread_mutex_unlock(&philo->infos->time_mutex);
@@ -50,15 +54,17 @@ int	check_death(t_args *infos, int i)
 	i = 0;
 	while (i < infos->philos_num)
 	{
-		if (get_current_time()
-			- infos->philo[i].last_eat_time > infos->time_to_die)
+		pthread_mutex_lock(&infos->time_mutex);
+		if (get_current_time() - infos->philo[i].last_eat_time > infos->time_to_die)
 		{
 			printf(RED);
 			print_message(&infos->philo[i], "is died ☠️", 0);
 			printf(RESET);
 			return (1);
 		}
-		if (infos->max == infos->max_eaten * infos->philos_num)
+		pthread_mutex_unlock(&infos->time_mutex);
+		pthread_mutex_lock(&infos->read_mutex[0]);
+		if (infos->is_max_specified && infos->max == infos->max_eaten * infos->philos_num)
 		{
 			pthread_mutex_lock(&infos->print_mutex);
 			printf(RED);
@@ -66,6 +72,7 @@ int	check_death(t_args *infos, int i)
 			printf(RESET);
 			return (1);
 		}
+		pthread_mutex_unlock(&infos->read_mutex[0]);
 		i++;
 	}
 	return (0);

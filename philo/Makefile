@@ -6,7 +6,7 @@
 #    By: maneddam <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/28 16:10:02 by maneddam          #+#    #+#              #
-#    Updated: 2023/02/28 18:55:20 by maneddam         ###   ########.fr        #
+#    Updated: 2023/03/01 17:58:09 by maneddam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,6 +14,7 @@ NAME = philo
 CC = @cc
 RM = rm -f
 CFLAGS = -Werror -Wextra -Wall
+# -fsanitize=thread -g3
 SRC = philo.c utils.c utils1.c utils2.c error.c
 OBJ = $(SRC:.c=.o)
 
