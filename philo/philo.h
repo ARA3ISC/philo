@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 01:34:24 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/01 10:03:11 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/15 15:14:14 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,9 @@
 # include <string.h>
 # include <sys/time.h>
 # include <unistd.h>
+#include <stdbool.h>
 
-# define RED "\e[1;31m"
+# define RED "\e[1;31m\033[1m"
 # define PURPLE "\e[35m"
 # define RESET "\n\033[0m"
 # define GREEN "\033[0;32m"
@@ -48,7 +49,8 @@ typedef struct s_args
 	int					is_max_specified;
 	long				init_time;
 	pthread_mutex_t		print_mutex;
-	pthread_mutex_t		read_mutex[2];
+	pthread_mutex_t		increment_mutex;
+	pthread_mutex_t		read_mutex;
 	pthread_mutex_t		time_mutex;
 	pthread_mutex_t		*forks;
 	struct philosophers	*philo;
@@ -56,15 +58,14 @@ typedef struct s_args
 
 void					print_error(char *msg);
 long int				ft_atoi(const char *str);
-void					check_args(char *argv[]);
-void					get_infos(t_args *info, int argc, char *argv[]);
+bool					check_args(char *argv[]);
+bool					get_infos(t_args *info, int argc, char *argv[]);
 long					get_current_time(void);
 void					initializing_mutexes(t_args *infos);
 
 void					destroy_mutexes(t_args *infos);
 void					initializing_infos(t_args *infos);
 
-void					get_infos(t_args *info, int argc, char *argv[]);
 long					get_current_time(void);
 void					initializing_mutexes(t_args *infos);
 void					destroy_mutexes(t_args *infos);

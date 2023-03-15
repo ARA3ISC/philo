@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 00:00:37 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/01 10:12:58 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/15 15:20:45 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,37 @@
 
 void	eating(t_philo *philo)
 {
+	// lock forks and print situation
 	pthread_mutex_lock(&philo->infos->forks[philo->right_fork]);
 	print_message(philo, "has taken a fork", 1);
 	pthread_mutex_lock(&philo->infos->forks[philo->left_fork]);
 	print_message(philo, "has taken a fork", 1);
 	print_message(philo, "is eating", 1);
-	pthread_mutex_lock(&philo->infos->read_mutex[0]);
+
+	// reading mutex locked
+	pthread_mutex_lock(&philo->infos->read_mutex);
 	philo->eaten_meals++;
-	pthread_mutex_unlock(&philo->infos->read_mutex[0]);
-	pthread_mutex_lock(&philo->infos->read_mutex[1]);
+	pthread_mutex_unlock(&philo->infos->read_mutex);
+	// reading mutex unlocked
+
+	// incrementing mutex locked
+	pthread_mutex_lock(&philo->infos->increment_mutex);
 	philo->infos->max++;
-	pthread_mutex_unlock(&philo->infos->read_mutex[1]);
+	pthread_mutex_unlock(&philo->infos->increment_mutex);
+	// incrementing mutex unlocked
+
+	// lock time mutex
 	pthread_mutex_lock(&philo->infos->time_mutex);
 	philo->last_eat_time = get_current_time();
 	pthread_mutex_unlock(&philo->infos->time_mutex);
+	// incrementing mutex unlocked
+
+	// sleep
 	ft_sleep(philo->infos->time_to_eat);
-	pthread_mutex_unlock(&philo->infos->forks[philo->right_fork]);
+
+	// unlock forks
 	pthread_mutex_unlock(&philo->infos->forks[philo->left_fork]);
+	pthread_mutex_unlock(&philo->infos->forks[philo->right_fork]);
 }
 
 void	*actions(void *arg)
@@ -62,8 +76,12 @@ int	check_death(t_args *infos, int i)
 			printf(RESET);
 			return (1);
 		}
+
 		pthread_mutex_unlock(&infos->time_mutex);
-		pthread_mutex_lock(&infos->read_mutex[0]);
+		pthread_mutex_lock(&infos->read_mutex);
+		pthread_mutex_lock(&infos->time_mutex);
+
+		pthread_mutex_lock(&infos->increment_mutex);
 		if (infos->is_max_specified && infos->max == infos->max_eaten * infos->philos_num)
 		{
 			pthread_mutex_lock(&infos->print_mutex);
@@ -72,7 +90,10 @@ int	check_death(t_args *infos, int i)
 			printf(RESET);
 			return (1);
 		}
-		pthread_mutex_unlock(&infos->read_mutex[0]);
+		pthread_mutex_unlock(&infos->read_mutex);
+		pthread_mutex_unlock(&infos->time_mutex);
+		pthread_mutex_unlock(&infos->increment_mutex);
+
 		i++;
 	}
 	return (0);
@@ -93,7 +114,10 @@ void	creating_threads(t_args *infos, int i)
 			infos->philo[i].left_fork = i + 1;
 		if (pthread_create(&infos->philo[i].thread, NULL, &actions,
 				&infos->philo[i]) != 0)
+		{
 			print_error("creating thread failed");
+			return ;
+		}
 		i++;
 	}
 }
@@ -107,11 +131,4 @@ void	initializing_infos(t_args *infos)
 	while (1)
 		if (check_death(infos, i))
 			return ;
-	i = 0;
-	while (i < infos->philos_num)
-	{
-		if (pthread_join(infos->philo[i].thread, NULL) != 0)
-			print_error("joining thread failed");
-		i++;
-	}
 }

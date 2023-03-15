@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 03:09:03 by maneddam          #+#    #+#             */
-/*   Updated: 2023/02/28 19:07:51 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/15 14:41:07 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,21 @@ void	print_message(t_philo *philo, char *str, int i)
 	pthread_mutex_lock(&philo->infos->print_mutex);
 	printf("%ld %d %s\n", get_current_time() - philo->infos->init_time,
 		philo->id + 1, str);
+		// printf("********* %d\n", i);
+	// if ( !i )
+		// exit ( 0 );
 	if (i)
+	{
 		pthread_mutex_unlock(&philo->infos->print_mutex);
+	}
 }
 
 void	print_error(char *msg)
 {
 	printf("%s !!\n", msg);
-	exit(1);
 }
 
-int	is_full_of_whitespaces(char *str)
+int	is_full_of_white_spaces(char *str)
 {
 	int	i;
 
@@ -41,13 +45,30 @@ int	is_full_of_whitespaces(char *str)
 	return (1);
 }
 
-void	check_args(char *argv[])
+int	invalid_arg(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str[0] == '\0')
+		return (1);
+	while (str[i])
+	{
+		if ((str[i] != ' ' && !(str[i] >= '0' && str[i] <= '9') && str[i] != '+')
+			|| is_full_of_white_spaces(str))
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+bool	check_args(char *argv[])
 {
 	int	i;
 	int	j;
 	int	count;
 
-	i = 0;
+	i = 1;
 	while (argv[i])
 	{
 		j = 0;
@@ -59,8 +80,9 @@ void	check_args(char *argv[])
 				count++;
 			j++;
 		}
-		if (count > 1 || is_full_of_whitespaces(argv[i]))
-			print_error("Invalid argument");
+		if (count > 1 || invalid_arg(argv[i]))
+			return (0);
 		i++;
 	}
+	return (1);
 }
